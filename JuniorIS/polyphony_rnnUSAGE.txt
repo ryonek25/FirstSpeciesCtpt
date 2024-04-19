@@ -1,0 +1,65 @@
+--beam_size: The beam size to use for beam search when generating tracks.
+    (default: '1')
+    (an integer)
+  --branch_factor: The branch factor to use for beam search when generating tracks.
+    (default: '1')
+    (an integer)
+  --bundle_description: A short, human-readable text description of the bundle (e.g., training data, hyper parameters, etc.).
+  --bundle_file: Path to the bundle file. If specified, this will take priority over run_dir, unless save_generator_bundle is True, in which case both this flag and
+    run_dir are required
+  --[no]condition_on_primer: If set, the RNN will receive the primer as its input before it begins generating a new sequence.
+    (default: 'false')
+  --config: Config to use.
+    (default: 'polyphony')
+  --hparams: Comma-separated list of `name=value` pairs. For each pair, the value of the hyperparameter named `name` is set to `value`. This mapping is merged with the
+    default hyperparameters.
+    (default: '')
+  --[no]inject_primer_during_generation: If set, the primer will be injected as a part of the generated sequence. This option is useful if you want the model to
+    harmonize an existing melody.
+    (default: 'true')
+  --log: The threshold for what messages will be logged DEBUG, INFO, WARN, ERROR, or FATAL.
+    (default: 'INFO')
+  --num_outputs: The number of tracks to generate. One MIDI file will be created for each.
+    (default: '10')
+    (an integer)
+  --num_steps: The total number of steps the generated track should be, priming track length + generated steps. Each step is a 16th of a bar.
+    (default: '128')
+    (an integer)
+  --output_dir: The directory where MIDI files will be saved to.
+    (default: '/tmp/polyphony_rnn/generated')
+  --primer_melody: A string representation of a Python list of note_seq.Melody event values. For example: "[60, -2, 60, -2, 67, -2, 67, -2]".
+    (default: '')
+  --primer_midi: The path to a MIDI file containing a polyphonic track that will be used as a priming track.
+    (default: '')
+  --primer_pitches: A string representation of a Python list of pitches that will be used as a starting chord with a quarter note duration. For example: "[60, 64, 67]"
+    (default: '')
+  --qpm: The quarters per minute to play generated output at. If a primer MIDI is given, the qpm from that will override this flag. If qpm is None, qpm will default to
+    120.
+    (a number)
+  --run_dir: Path to the directory where the latest checkpoint will be loaded from.
+  --[no]save_generator_bundle: If true, instead of generating a sequence, will save this generator as a bundle file in the location specified by the bundle_file flag
+    (default: 'false')
+  --steps_per_iteration: The number of steps to take per beam search iteration.
+    (default: '1')
+    (an integer)
+  --temperature: The randomness of the generated tracks. 1.0 uses the unaltered softmax probabilities, greater than 1.0 makes tracks more random, less than 1.0 makes
+    tracks less random.
+    (default: '1.0')
+    (a number)
+
+tensorflow.python.ops.parallel_for.pfor:
+  --[no]op_conversion_fallback_to_while_loop: DEPRECATED: Flag is ignored.
+    (default: 'true')
+
+tensorflow.python.tpu.client.client:
+  --[no]hbm_oom_exit: Exit the script when the TPU HBM is OOM.
+    (default: 'true')
+  --[no]runtime_oom_exit: Exit the script when the TPU runtime is OOM.
+    (default: 'true')
+
+absl.flags:
+  --flagfile: Insert flag definitions from the given file into the command line.
+    (default: '')
+  --undefok: comma-separated list of flag names that it is okay to specify on the command line even if the program does not define a flag with that name.  IMPORTANT:
+    flags in this list that have arguments MUST use the --flag=value format.
+    (default: '')

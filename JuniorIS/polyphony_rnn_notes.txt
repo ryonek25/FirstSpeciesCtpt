@@ -1,0 +1,81 @@
+1. Path to directory of MIDI datasets
+cd FirstSpeciesCtpt
+cd JuniorIS
+
+2. Activates magenta
+
+source activate magenta
+pip install magenta
+
+3. Converts MIDI datasets to NoteSequences
+
+convert_dir_to_note_sequences \
+  --input_dir=/home/ryanyonek/FirstSpeciesCtpt/JuniorIS/PolyphonyTrainingSet/ \
+  --output_file=/tmp/notesequences.tfrecord \
+  --recursive
+
+4. Creates the dataset 
+
+polyphony_rnn_create_dataset \
+--input=/tmp/notesequences.tfrecord \
+--output_dir=/tmp/polyphony_rnn/sequence_examples \
+--eval_ratio=0.10
+
+5. Trains the Model
+
+polyphony_rnn_train \
+--run_dir=/tmp/polyphony_rnn/logdir/run1 \
+--sequence_example_file=/tmp/polyphony_rnn/sequence_examples/training_poly_tracks.tfrecord \
+--hparams="batch_size=64,rnn_layer_sizes=[64,64]" \
+--num_training_steps=20000
+
+
+6. Evaluates the Model (Runs simultaneously with train)
+
+polyphony_rnn_train \
+--run_dir=/tmp/polyphony_rnn/logdir/run1 \
+--sequence_example_file=/tmp/polyphony_rnn/sequence_examples/eval_poly_tracks.tfrecord \
+--hparams="batch_size=64,rnn_layer_sizes=[64,64]" \
+--num_eval_examples=20000 \
+--eval
+
+7. Runs Tensorboard to view the training and evaluation data
+
+tensorboard --logdir=/tmp/polyphony_rnn/logdir
+http://localhost:6006 to view the dashboard
+
+8. Generates 10 Polyphonic Track 
+
+polyphony_rnn_generate \
+--run_dir=/tmp/polyphony_rnn/logdir/run1 \
+--hparams="batch_size=64,rnn_layer_sizes=[64,64]" \
+--output_dir=/tmp/polyphony_rnn/generated \
+--num_outputs=10 \
+--num_steps=128 \
+--primer_midi=/home/ryanyonek/FirstSpeciesCtpt/JuniorIS/PolyphonyTestingSet/Above_Aeolian5.mid \
+--condition_on_primer=true \
+--inject_primer_during_generation=false
+
+input_dir - input directory of MIDI training examples 
+
+eval_ratio - the percentage of training examples used in evaluation (90% train, 10% evaluate)
+
+num_eval_examples - number of steps taken in the training process
+
+sequence_example_file - file taken directory of created dataset
+
+run_dir - path to the trained RNN directory
+
+hparams - hyperparameters used to alter the network
+
+output_dir - path to the output directory where the generated MIDI tracks go
+
+num_outputs - number of MIDI files generated
+
+num_steps - number of measures, 16 steps per measure (128 = 8 measures)
+
+primer_midi - the path of the MIDI track used to prime the RNN
+
+condition_on_primer - takes the primer_midi and inserts it as the first 16 steps of the output MIDI file
+
+inject_primer_during_generation - only for testing with melodies, stays false
